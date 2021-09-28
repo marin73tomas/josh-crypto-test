@@ -1,3 +1,21 @@
+@font-face {
+  font-family: "Aeonik";
+  font-style: normal;
+
+  font-weight: normal;
+  src: url("./fonts/Aeonik-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Aeonik";
+  font-style: normal;
+
+  font-weight: bold;
+  src: url("./fonts/Aeonik-Bold.otf") format("opentype");
+}
+body {
+  font-family: "Aeonik";
+}
 html,
 body,
 #root {
@@ -22,11 +40,58 @@ body {
   fill: none;
 }
 
-
-
 .circle-progress {
-
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+#menu- {
+  top: 380px;
+  left: 30px;
+  width: 100% !important;
+  max-width: 400px !important;
+}
+
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiMenu-paper.MuiPaper-elevation8.MuiPopover-paper.css-1poimk-MuiPaper-root-MuiMenu-paper-MuiPaper-root-MuiPopover-paper {
+  width: 500px;
+}
+
+#custom-trackETH .MuiSlider-track {
+  color: #1d87e8 !important;
+}
+#custom-trackPLX .MuiSlider-track {
+  color: #31d4ea !important;
+}
+#custom-trackBTC .MuiSlider-track {
+  color: #ffff59 !important;
+}
+#custom-trackADA .MuiSlider-track {
+  color: #f54b68 !important;
+}
+#custom-trackDGB .MuiSlider-track {
+  color: #3be89c !important;
+}
+#custom-trackBNB .MuiSlider-track {
+  color: #fda758 !important;
+}
+.MuiListItem-gutters {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.MuiListItemButton-gutters {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.MuiList-padding {
+  max-width: initial !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: center;
+  gap: 8px;
+}
+.MuiListItemButton-root {
+  height: 100% !important;
+  display: flex;
+  align-items: center;
+}

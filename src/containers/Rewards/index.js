@@ -3,7 +3,6 @@ import React, { useState } from "react";
 // import "react-circular-progressbar/dist/styles.css";
 import CircularProgressBar from "../../components/CircleProgressBar";
 //import ProgressLabel from "react-progress-label";
-
 import Typography from "@mui/material/Typography";
 import Slider from "@mui/material/Slider";
 //import MuiInput from "@mui/material/Input";
@@ -14,17 +13,43 @@ import ListItemButton from "@mui/material/ListItemButton";
 
 import { Select, FormControl, MenuItem, Input, Container } from "@mui/material";
 const circleIncreaseRate = 26.66;
-let cryptoValues = [
-  { name: "ETH", color: "#1D87E8", icon: "./assets/img/ethicon.png" },
-  { name: "PLX", color: "#31D4EA", icon: "./assets/img/plxicon.png" },
-  { name: "BTC", color: "#FFFF59", icon: "./assets/img/ethicon.png" },
-  { name: "ADA", color: "#F54B68", icon: "./assets/img/ethicon.png" },
-  { name: "DGB", color: "#3BE89C", icon: "./assets/img/ethicon.png" },
-  { name: "BNB", color: "#FDA758", icon: "./assets/img/ethicon.png" },
+const CRYPTOS = [
+  { name: "ETH", color: "#1D87E8", icon: "assets/img/ethicon.png" },
+  { name: "PLX", color: "#31D4EA", icon: "assets/img/plxicon.png" },
+  { name: "BTC", color: "#FFFF59", icon: "assets/img/ethicon.png" },
+  { name: "ADA", color: "#F54B68", icon: "assets/img/ethicon.png" },
+  { name: "DGB", color: "#3BE89C", icon: "assets/img/ethicon.png" },
+  { name: "BNB", color: "#FDA758", icon: "assets/img/ethicon.png" },
 ];
+function hexToRgbA(hex, opacity) {
+  var c;
+  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+    c = hex.substring(1).split("");
+    if (c.length == 3) {
+      c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c = "0x" + c.join("");
+    return (
+      "rgba(" +
+      [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") +
+      `,${opacity})`
+    );
+  }
+  throw new Error("Bad Hex");
+}
 
 const Rewards = ({ classes }) => {
   const [cryptoList, setCryptoList] = useState([]);
+  const [cryptoValues, setCryptoValues] = useState(CRYPTOS);
+
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
   const handleCryptoSliderChange = (event, newValue, name) => {
     setCryptoList(
       cryptoList.map((e) => {
@@ -44,11 +69,12 @@ const Rewards = ({ classes }) => {
           value: 0,
           name,
           color: cryptoValues.filter((e) => e.name == name)[0].color,
+          icon: cryptoValues.filter((e) => e.name == name)[0].icon,
         },
         ...cryptoList,
       ].reverse()
     );
-    cryptoValues = cryptoValues.filter((e) => e.name != name);
+    setCryptoValues(cryptoValues.filter((e) => e.name != name));
   };
   const renderCryptoValue = () =>
     cryptoValues.map((e) => (
@@ -82,11 +108,12 @@ const Rewards = ({ classes }) => {
         calc = 8;
       }
       let size =
-        idx * (rate == 0 || circleIncreaseRate) + 42.67 + (idx * 3 || 1);
+        idx * (rate == 0 || circleIncreaseRate) + 42.67 + (idx || 1);
       if (idx == 5) {
-        calc = 9;
-        size = size + 3;
+        calc = 8.8;
+        size = size + 1.8;
       }
+      console.log(classes.track);
       return (
         <div
           style={{
@@ -127,38 +154,85 @@ const Rewards = ({ classes }) => {
     cryptoList.map((e, idx) => (
       <ListItem className={classes.cryptoListItem} key={e.name}>
         <ListItemButton>
-          <Slider
-            value={e.value}
-            onChange={(event, newValue) =>
-              handleCryptoSliderChange(event, newValue, e.name)
-            }
-            aria-labelledby="input-slider"
-          />
-          <span>{e.value}</span>
+          <div
+            className={classes.sliderIcon}
+            style={{
+              width: "108px",
+              height: "60px",
+              background: hexToRgbA(e.color, 0.4),
+              borderRadius: "12px 0px 0px 12px",
+            }}
+          >
+            <img className="img-name" src={e.icon} alt={`${e.name}-icon`} />
+            <h4>{e.name}</h4>
+            <img
+              className="img-chevron"
+              src="assets/img/Chevron.svg"
+              alt="chevron"
+            />
+          </div>
+          <div className={classes.trackWrapper}>
+            <Slider
+              value={e.value}
+              onChange={(event, newValue) =>
+                handleCryptoSliderChange(event, newValue, e.name)
+              }
+              aria-labelledby="input-slider"
+              id={`custom-track${e.name}`}
+              sx={{
+                "& .MuiSlider-thumb": {
+                  "&:hover, &.Mui-focusVisible": {
+                    boxShadow: "initial !important",
+                  },
+                },
+              }}
+            />
+            <span>{`${e.value}%`}</span>
+          </div>
         </ListItemButton>
       </ListItem>
     ));
 
   return (
     <Container maxWidth="sm" className={classes.rewards}>
+      <h2>Your Rewards</h2>
       <section className={classes.rewardsContainer}>
+        <div className={classes.removeIcon}>
+          <img src="assets/img/Trash.svg" alt="trash-icon" style={{"width":"20px","height":"20px"}}/>
+        </div>
         <div className={classes.circlesSection}>{renderCircles()}</div>
-        <List
-          sx={{
-            width: "100%",
-            maxWidth: 360,
-            bgcolor: "background.paper",
-            position: "relative",
-            overflow: "auto",
-            maxHeight: 300,
-            "& ul": { padding: 0 },
-          }}
-        >
-          {renderCryptoList()}
-        </List>
-        <FormControl fullWidth>
-          <Select onChange={handleAddCryptoItem}>{renderCryptoValue()}</Select>
-        </FormControl>
+        <div className={classes.selectorContainer}>
+          <List
+            className={classes.multiList}
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 600,
+              "& ul": { padding: 0 },
+            }}
+          >
+            {renderCryptoList()}
+          </List>
+
+          <FormControl fullWidth style={{ display: "none" }}>
+            <Select
+              onClose={handleClose}
+              open={open}
+              onChange={handleAddCryptoItem}
+            >
+              {renderCryptoValue()}
+            </Select>
+          </FormControl>
+          <a onClick={handleOpen} className={classes.addNewItem}>
+            <div className={classes.plusIcon}>
+              <img src="assets/img/Plus.png" alt="plus-icon" />
+            </div>
+            <span>Add another token</span>
+          </a>
+        </div>
       </section>
     </Container>
   );
